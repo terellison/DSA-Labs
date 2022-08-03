@@ -99,16 +99,8 @@ public:
 	// Copy constructor
 	//		Used to initialize one object to another
 	// In:	_copy				The object to copy from
-	DynArray(const DynArray& _copy) {
-		mSize = _copy.Size();
-		mCapacity = _copy.Capacity();
-
-		mArray = new Type[mCapacity];
-
-		for (unsigned int i = 0; i < mSize; ++i)
-		{
-			mArray[i] = _copy.mArray[i];
-		}
+	DynArray(const DynArray& _copy) : DynArray() {
+		*this = _copy;
 	}
 
 	// Assignment operator
@@ -120,7 +112,7 @@ public:
 	DynArray& operator=(const DynArray& _assign) {
 		if (this != &_assign)
 		{
-			this->~DynArray();
+			if (this->mArray != nullptr) { this->~DynArray(); }
 			this->mCapacity = _assign.mCapacity;
 			this->mSize = _assign.mSize;
 
