@@ -27,6 +27,7 @@ int main() {
 	// This function call will set a breakpoint at the location of a leaked block
 	// Set the parameter to the identifier for a leaked block
 	_CrtSetBreakAlloc(-1);
+	_CrtDumpMemoryLeaks();
 
 	TestHarness test;
 
