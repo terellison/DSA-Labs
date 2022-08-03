@@ -118,12 +118,19 @@ public:
 	// Return: The invoking object (by reference)
 	//		This allows us to daisy-chain
 	DynArray& operator=(const DynArray& _assign) {
-		delete[] this->mArray;
-		this->mArray = _assign.mArray;
-		this->mCapacity = _assign.mCapacity;
-		this->mSize = _assign.mSize;
+		if (this != &_assign)
+		{
+			this->~DynArray();
+			this->mCapacity = _assign.mCapacity;
+			this->mSize = _assign.mSize;
 
+			this->mArray = new Type[mCapacity];
 
+			for (unsigned int i = 0; i < mSize; ++i)
+			{
+				mArray[i] = _assign.mArray[i];
+			}
+		}
 		return *this;
 	}
 
