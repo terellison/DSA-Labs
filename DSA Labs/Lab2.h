@@ -38,7 +38,7 @@ NOTE: If the unit test is not on, that code will not be compiled!
 
 // Individual unit test toggles
 #define LAB2_PALINDROME_NUMBER		1
-#define LAB2_FILL_FILE				0
+#define LAB2_FILL_FILE				1
 #define LAB2_FILL_ARRAY				1
 #define LAB2_CLEAR					1
 #define LAB2_SORT_ASCENDING			1
@@ -46,7 +46,7 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define LAB2_BRACKETS				1
 #define LAB2_CONTAINS_TRUE			1
 #define LAB2_CONTAINS_FALSE			1
-#define LAB2_MOVE_PALINDROMES		0
+#define LAB2_MOVE_PALINDROMES		1
 
 /************/
 /* Includes */
@@ -95,41 +95,18 @@ public:
 	// In:	_input		Name of the file to open
 	void Fill(const char* _input) {
 		std::ifstream inputFile(_input, std::ios::in | std::ios::binary);
-		char buffer[4];
-		byte bytes[4];
-		inputFile.read(buffer, 4);
+		
+		int size;
 
-		size_t size = 0;
+		inputFile.read((char *)&size, sizeof(int));
 
-		for (auto i = 0; i < 4; ++i)
-		{
-			bytes[i] = (byte)buffer[i];
-		}
-
-		size = size_t(bytes[0] << 24 |
-			bytes[1] << 16 |
-			bytes[2] << 8 |
-			bytes[3]);
-
-		char numBuffer[sizeof(int)];
-		byte numBytes[sizeof(int)];
+		int num;
 
 		for (size_t i = 0; i < size; ++i)
 		{
-			inputFile.read(numBuffer, sizeof(int));
+			inputFile.read((char *)&num, sizeof(int));
 
-			for (auto i = 0; i < sizeof(int); ++i)
-			{
-				numBytes[i] = (byte)numBuffer[i];
-			}
-
-			mValues.push_back(int(numBytes[0] << 24 |
-				numBytes[1] << 16 |
-				numBytes[2] << 8 |
-				numBytes[3]));
-
-			memset(numBuffer, 0, sizeof numBuffer);
-			memset(numBytes, 0, sizeof numBytes);
+			mValues.push_back(num);
 		}
 	}
 
@@ -211,6 +188,7 @@ public:
 			{
 				mPalindromes.push_back(mValues[i]);
 				mValues.erase(mValues.begin() + i);
+				--values;
 			}
 		}
 		return;
