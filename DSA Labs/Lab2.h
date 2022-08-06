@@ -57,7 +57,6 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #include <algorithm>
 #include <iostream>
 
-#define byte unsigned char
 
 // Checks to see if a number is a palindrome (reads the same forwards and backwards)
 //		An example of a palindrome word would be "racecar"
@@ -108,6 +107,8 @@ public:
 
 			mValues.push_back(num);
 		}
+
+		inputFile.close();
 	}
 
 	// Fill out the mValues vector with the contents of an array
@@ -129,6 +130,9 @@ public:
 	void Clear() {
 		mValues.clear();
 		mValues.shrink_to_fit();
+
+		mPalindromes.clear();
+		mPalindromes.shrink_to_fit();
 	}
 
 	// Sort the vector 
