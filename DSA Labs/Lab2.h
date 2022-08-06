@@ -34,18 +34,18 @@ NOTE: If the unit test is not on, that code will not be compiled!
 */
 
 // Main toggle
-#define LAB_2	0
+#define LAB_2	1
 
 // Individual unit test toggles
-#define LAB2_PALINDROME_NUMBER		0
+#define LAB2_PALINDROME_NUMBER		1
 #define LAB2_FILL_FILE				0
-#define LAB2_FILL_ARRAY				0
-#define LAB2_CLEAR					0
-#define LAB2_SORT_ASCENDING			0
-#define LAB2_SORT_DESCENDING		0
-#define LAB2_BRACKETS				0
-#define LAB2_CONTAINS_TRUE			0
-#define LAB2_CONTAINS_FALSE			0
+#define LAB2_FILL_ARRAY				1
+#define LAB2_CLEAR					1
+#define LAB2_SORT_ASCENDING			1
+#define LAB2_SORT_DESCENDING		1
+#define LAB2_BRACKETS				1
+#define LAB2_CONTAINS_TRUE			1
+#define LAB2_CONTAINS_FALSE			1
 #define LAB2_MOVE_PALINDROMES		0
 
 /************/
@@ -57,6 +57,8 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #include <algorithm>
 #include <iostream>
 
+#define byte unsigned char
+
 // Checks to see if a number is a palindrome (reads the same forwards and backwards)
 //		An example of a palindrome word would be "racecar"
 //
@@ -64,8 +66,16 @@ NOTE: If the unit test is not on, that code will not be compiled!
 //
 // Return: True, if the number is a palindrome number
 inline bool IsPalindromeNumber(unsigned int _num) {
-	// TODO: Implement this function	
-	
+	unsigned int reverse = 0, _numCpy = _num;
+
+	while (_numCpy != 0)
+	{
+		unsigned int digit = _numCpy % 10;
+		reverse = (reverse * 10) + digit;
+		_numCpy /= 10;
+	}
+
+	return reverse == _num;
 }
 
 class DSA_Lab2
@@ -84,8 +94,43 @@ public:
 	//
 	// In:	_input		Name of the file to open
 	void Fill(const char* _input) {
-		// TODO: Implement this method
+		std::ifstream inputFile(_input, std::ios::in | std::ios::binary);
+		char buffer[4];
+		byte bytes[4];
+		inputFile.read(buffer, 4);
 
+		size_t size = 0;
+
+		for (auto i = 0; i < 4; ++i)
+		{
+			bytes[i] = (byte)buffer[i];
+		}
+
+		size = size_t(bytes[0] << 24 |
+			bytes[1] << 16 |
+			bytes[2] << 8 |
+			bytes[3]);
+
+		char numBuffer[sizeof(int)];
+		byte numBytes[sizeof(int)];
+
+		for (size_t i = 0; i < size; ++i)
+		{
+			inputFile.read(numBuffer, sizeof(int));
+
+			for (auto i = 0; i < sizeof(int); ++i)
+			{
+				numBytes[i] = (byte)numBuffer[i];
+			}
+
+			mValues.push_back(int(numBytes[0] << 24 |
+				numBytes[1] << 16 |
+				numBytes[2] << 8 |
+				numBytes[3]));
+
+			memset(numBuffer, 0, sizeof numBuffer);
+			memset(numBytes, 0, sizeof numBytes);
+		}
 	}
 
 	// Fill out the mValues vector with the contents of an array
@@ -93,14 +138,20 @@ public:
 	// In:	_arr			The array of values
 	//		_size			The number of elements in the array
 	void Fill(const int* _arr, size_t _size) {
-		// TODO: Implement this method
+		if (!mValues.empty())
+			mValues.clear();
 
+		for (size_t i = 0; i < _size; ++i)
+		{
+			mValues.push_back(*(_arr + i));
+		}
+		return;
 	}
 
 	// Remove all elements from vector and decrease capacity to 0
 	void Clear() {
-		// TODO: Implement this method
-
+		mValues.clear();
+		mValues.shrink_to_fit();
 	}
 
 	// Sort the vector 
@@ -109,14 +160,23 @@ public:
 	//
 	// NOTE: Use the std::sort method in this implementation
 	void Sort(bool _ascending) {
-		// TODO: Implement this method
-
+		if (_ascending)
+			std::sort(mValues.begin(), mValues.end(),
+				[](const int i, const int j) -> bool
+				{
+					return i < j;
+				});
+		else
+			std::sort(mValues.begin(), mValues.end(),
+				[](const int i, const int j) -> bool
+				{
+					return i > j;
+				});
 	}
 
 	// Get an individual element from the mValues vector
 	int operator[](int _index) {
-		// TODO: Implement this method
-
+		return mValues[_index];
 	}
 
 	// Determine if a value is present in the vector
@@ -125,8 +185,15 @@ public:
 	//
 	// Return: True, if the value is present
 	bool Contains(int _val) const {
-		// TODO: Implement this method
-
+		size_t size = mValues.size();
+		bool found;
+		for (size_t i = 0; i < size; ++i)
+		{
+			found = mValues[i] == _val;
+			if (found)
+				break;
+		}
+		return found;
 	}
 
 	// Move all palindrome numbers from mValues vector to mPalindromes vector
@@ -137,8 +204,16 @@ public:
 	//				add it to the palindrome vector
 	//				remove it from the values vector
 	void MovePalindromes() {	
-		// TODO: Implement this method
-
+		size_t values = mValues.size();
+		for (size_t i = 0; i < values; ++i)
+		{
+			if (IsPalindromeNumber(mValues[i]))
+			{
+				mPalindromes.push_back(mValues[i]);
+				mValues.erase(mValues.begin() + i);
+			}
+		}
+		return;
 	}
 };
 
