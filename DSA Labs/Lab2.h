@@ -189,6 +189,7 @@ public:
 				mPalindromes.push_back(mValues[i]);
 				mValues.erase(mValues.begin() + i);
 				--values;
+				--i;
 			}
 		}
 		return;
