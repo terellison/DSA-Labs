@@ -187,9 +187,8 @@ public:
 	//				If _newCapacity < mCapacity, do nothing
 	//
 	//	SPECIAL CASE: If mCapacity is 0, then it should be set to 1
-	void Reserve(size_t _newCapacity = 0) {
-		bool shouldResize = true;
-		if (_newCapacity < mCapacity && _newCapacity != 0) { shouldResize = false; }
+	void Reserve(const size_t _newCapacity = 0) {
+		if (_newCapacity < mCapacity && _newCapacity != 0) { return; }
 		
 		else if (_newCapacity == 0)
 		{
@@ -203,17 +202,15 @@ public:
 			mCapacity = _newCapacity;
 		}
 
-		if (shouldResize)
+		Type* temp = new Type[mCapacity];
+
+		for (unsigned int i = 0; i < mSize; ++i)
 		{
-			Type* temp = new Type[mCapacity];
-
-			for (unsigned int i = 0; i < mSize; ++i)
-			{
-				temp[i] = mArray[i];
-			}
-
-			delete[] mArray;
-			mArray = temp;
+			temp[i] = mArray[i];
 		}
+
+		delete[] mArray;
+		mArray = temp;
+		
 	}
 };
