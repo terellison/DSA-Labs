@@ -239,7 +239,6 @@ public:
 	// Default constructor
 	//		Creates a new empty linked list
 	DList() {
-		// TODO: Implement this method
 		mHead = NULL;
 		mTail = NULL;
 		mSize = 0;
@@ -248,31 +247,17 @@ public:
 	// Destructor
 	//		Cleans up all dynamically allocated memory
 	~DList() {
-		Node* next = NULL;
-		while (mHead != NULL)
-		{
-			next = mHead->next;
-			delete mHead;
-			mHead = next;
-			--mSize;
-		}
-		mTail = NULL;
+		this->Clear();
 	}
 
 	// Copy constructor
 	//		Used to initialize one object to another
 	// In:	_copy			The object to copy from
 	DList(const DList& _copy)  {
-		Node* current = new Node(_copy.mHead->data);
-		this->mHead = current;
-		Node* next = _copy.mHead->next;
-		while (next != NULL)
-		{
-			Node* temp = new Node(next->data);
-			temp->prev = current;
-			current = temp;
-			next = next->next;
-		}
+		this->mHead = NULL;
+		this->mTail = NULL;
+		this->mSize = 0;
+		*this = _copy;
 	}
 
 	// Assignment operator
@@ -282,7 +267,34 @@ public:
 	// Return: The invoking object (by reference)
 	//		This allows us to daisy-chain
 	DList& operator=(const DList& _assign) {
-		DList::DList(_assign);
+		bool isNullPtr = this->mHead == nullptr;
+		if (this != &_assign)
+		{
+			if (this->mHead != NULL || this->mHead != nullptr)
+				this->Clear();
+			Node* current = new Node(_assign.mHead->data);
+			this->mHead = current;
+			Node next = *(_assign.mHead->next);
+			++mSize;
+			while (&next != NULL)
+			{
+				Node* temp = new Node(next.data);
+				temp->prev = current;
+				current->next = temp;
+				current = temp;
+				++mSize;
+				if (next.next == NULL)
+				{
+					break;
+				}
+				else
+				{
+					next = *(next.next);
+				}
+			}
+			mTail = current;
+		}
+			
 		return *this;
 	}
 
@@ -342,7 +354,16 @@ public:
 	// Clear the list of all dynamic memory
 	//			Resets the list to its default state
 	void Clear() {	
-		this->~DList();
+		Node* next = NULL;
+		while (mHead != NULL)
+		{
+			next = mHead->next;
+			delete mHead;
+			mHead->prev = NULL;
+			mHead = next;
+			--mSize;
+		}
+		mTail = NULL;
 	}
 
 private:
