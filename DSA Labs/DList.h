@@ -273,10 +273,6 @@ public:
 			if (this->mHead != NULL)
 				this->Clear();
 			RecursiveCopy(_assign.mHead);
-			Node* temp = mTail->prev;
-			delete mTail;
-			mTail = temp;
-			mTail->next = NULL;
 		}
 			
 		return *this;
@@ -289,29 +285,24 @@ private:
 	void RecursiveCopy(const Node* _curr) {
 		Node* prev = nullptr;
 				
-		if (_curr != NULL)
+		if (_curr->next != NULL)
 		{
 			if (this->mHead == NULL) // list is empty
 			{
 				this->mHead = new Node(_curr->data);
 				prev = this->mHead;
-				mTail = new Node(0);
-				mTail->prev = prev;
-				mHead->next = mTail;
 				++mSize;
 			}
 			else
 			{
-				mTail->data = _curr->data;
-				prev = mTail;
-				mTail = new Node(0);
-				mTail->prev = prev;
-				prev->next = mTail;
-				++mSize;
+				prev = mTail;	
 			}
 
+			mTail = new Node(_curr->next->data);
+			mTail->prev = prev;
+			prev->next = mTail;
 			RecursiveCopy(_curr->next);
-
+			++mSize;
 		}
 		return;
 	}
