@@ -270,29 +270,13 @@ public:
 		bool isNullPtr = this->mHead == nullptr;
 		if (this != &_assign)
 		{
-			if (this->mHead != NULL || this->mHead != nullptr)
+			if (this->mHead != NULL)
 				this->Clear();
-			Node* current = new Node(_assign.mHead->data);
-			this->mHead = current;
-			Node next = *(_assign.mHead->next);
-			++mSize;
-			while (&next != NULL)
-			{
-				Node* temp = new Node(next.data);
-				temp->prev = current;
-				current->next = temp;
-				current = temp;
-				++mSize;
-				if (next.next == NULL)
-				{
-					break;
-				}
-				else
-				{
-					next = *(next.next);
-				}
-			}
-			mTail = current;
+			RecursiveCopy(_assign.mHead);
+			Node* temp = mTail->prev;
+			delete mTail;
+			mTail = temp;
+			mTail->next = NULL;
 		}
 			
 		return *this;
@@ -303,7 +287,33 @@ private:
 	//
 	// In:	_curr		The current Node to copy
 	void RecursiveCopy(const Node* _curr) {
+		Node* prev = nullptr;
+				
+		if (_curr != NULL)
+		{
+			if (this->mHead == NULL) // list is empty
+			{
+				this->mHead = new Node(_curr->data);
+				prev = this->mHead;
+				mTail = new Node(0);
+				mTail->prev = prev;
+				mHead->next = mTail;
+				++mSize;
+			}
+			else
+			{
+				mTail->data = _curr->data;
+				prev = mTail;
+				mTail = new Node(0);
+				mTail->prev = prev;
+				prev->next = mTail;
+				++mSize;
+			}
 
+			RecursiveCopy(_curr->next);
+
+		}
+		return;
 	}
 
 public:
@@ -343,7 +353,6 @@ public:
 			return;
 		}
 
-		temp->data = _data;
 		mTail->next = temp;
 		temp->prev = mTail;
 		temp->next = NULL;
@@ -353,16 +362,9 @@ public:
 
 	// Clear the list of all dynamic memory
 	//			Resets the list to its default state
-	void Clear() {	
-		Node* next = NULL;
-		while (mHead != NULL)
-		{
-			next = mHead->next;
-			delete mHead;
-			mHead->prev = NULL;
-			mHead = next;
-			--mSize;
-		}
+	void Clear() {
+		RecursiveClear(this->mHead);
+		mHead = NULL;
 		mTail = NULL;
 	}
 
@@ -371,8 +373,15 @@ private:
 	// 
 	// In:	_curr		The current Node to clear
 	void RecursiveClear(const Node* _curr) {
-		// TODO (Optional): Implement this method
-
+		if (_curr != NULL)
+		{
+			Node* next = _curr->next;
+			RecursiveClear(next);
+			delete _curr;
+			_curr = NULL;
+			--mSize;
+		}
+		return;
 	}
 
 public:
@@ -457,6 +466,7 @@ public:
 			temp = mHead;
 			mHead = mHead->next;
 			delete temp;
+			mHead->prev = NULL;
 			_iter.mCurr = mHead;
 		}
 		else if (_iter.mCurr == this->mTail)
@@ -465,7 +475,7 @@ public:
 			mTail = mTail->prev;
 			delete temp;
 			mTail->next = NULL;
-			_iter.mCurr = mTail;
+			_iter.mCurr = nullptr;
 		}
 		else
 		{
@@ -493,7 +503,7 @@ public:
 	// Return: An iterator that has its curr pointing to a null pointer
 	Iterator End() const {
 		Iterator val{};
-		val.mCurr = this->mTail;
+		val.mCurr = nullptr;
 		return val;
 	}
 };
