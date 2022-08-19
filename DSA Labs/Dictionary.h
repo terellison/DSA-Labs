@@ -37,18 +37,18 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define LAB_5	1
 
 // Individual unit test toggles
-#define LAB5_PAIR_CTOR				0
-#define LAB5_CTOR					0
-#define LAB5_DTOR					0
-#define LAB5_CLEAR					0
-#define LAB5_INSERT_NEW				0
-#define LAB5_INSERT_EXISTING		0
+#define LAB5_PAIR_CTOR				1
+#define LAB5_CTOR					1
+#define LAB5_DTOR					1
+#define LAB5_CLEAR					1
+#define LAB5_INSERT_NEW				1
+#define LAB5_INSERT_EXISTING		1
 #define LAB5_FIND					1
-#define LAB5_FIND_NOT_FOUND			0
-#define LAB5_REMOVE					0
-#define LAB5_REMOVE_NOT_FOUND		0
-#define LAB5_ASSIGNMENT_OP			0
-#define LAB5_COPY_CTOR				0
+#define LAB5_FIND_NOT_FOUND			1
+#define LAB5_REMOVE					1
+#define LAB5_REMOVE_NOT_FOUND		1
+#define LAB5_ASSIGNMENT_OP			1
+#define LAB5_COPY_CTOR				1
 
 /************/
 /* Includes */
@@ -98,22 +98,26 @@ public:
 		this->mHashFunc = _hashFunc;
 
 		this->mTable = new std::list<Pair>[this->mNumBuckets];
-
 	}
 
 	// Destructor
 	//		Cleans up any dynamically allocated memory
 	~Dictionary() {
-		// TODO: Implement this method
-
+		this->Clear();
+		delete[] this->mTable;
+		this->mTable = NULL;
+		this->mNumBuckets = 0;
+		this->mHashFunc = nullptr;
 	}
 
 	// Copy constructor
 	//		Used to initialize one object to another
 	// In:	_copy				The object to copy from
 	Dictionary(const Dictionary& _copy) {
-		// TODO: Implement this method
-
+		this->mNumBuckets = 0;
+		this->mHashFunc = nullptr;
+		this->mTable = NULL;
+		*this = _copy;
 	}
 
 	// Assignment operator
@@ -123,8 +127,30 @@ public:
 	// Return: The invoking object (by reference)
 	//		This allows us to daisy-chain
 	Dictionary& operator=(const Dictionary& _assign) {
-		// TODO: Implement this method
-	
+		if (this != &_assign)
+		{
+			if (this->mTable != NULL)
+			{
+				this->~Dictionary();
+			}
+
+			this->mTable = new std::list<Pair>[_assign.mNumBuckets];
+			this->mHashFunc = _assign.mHashFunc;
+
+			for (size_t i = 0; i < _assign.mNumBuckets; ++i)
+			{
+				std::list<Pair>* bucket = (_assign.mTable + i);
+
+				for (auto it = bucket->begin(); it != bucket->end(); ++it)
+				{
+					this->mTable[i].push_back(*it);
+				}
+
+				++this->mNumBuckets;
+			}
+		}
+
+		return *this;
 	}
 
 	// Clear
@@ -137,7 +163,6 @@ public:
 
 			bucket->clear();
 		}
-		return;
 	}
 
 	// Insert an item into the table
@@ -168,7 +193,7 @@ public:
 
 		for (auto it = bucket->begin(); it != bucket->end(); ++it)
 		{
-			if (it->key == _key) { result = &it->value; }
+			if (it->key == _key) { result = &it->value; break; }
 		}
 
 		return result;
@@ -179,8 +204,21 @@ public:
 	//
 	// Return: True, if an item was removed
 	bool Remove(const Key& _key) {
-		// TODO: Implement this method
+		bool removed = false;
+		unsigned int bucketNum = this->mHashFunc(_key);
+		std::list<Pair>* bucket = &this->mTable[bucketNum];
 
+		for (auto it = bucket->begin(); it != bucket->end(); ++it)
+		{
+			if (it->key == _key)
+			{
+				bucket->remove(*it);
+				removed = true;
+				break;
+			}
+		}
+
+		return removed;
 	}
 	
 };
