@@ -267,7 +267,6 @@ public:
 	// Return: The invoking object (by reference)
 	//		This allows us to daisy-chain
 	DList& operator=(const DList& _assign) {
-		bool isNullPtr = this->mHead == nullptr;
 		if (this != &_assign)
 		{
 			if (this->mHead != NULL)
@@ -284,7 +283,7 @@ private:
 	// In:	_curr		The current Node to copy
 	void RecursiveCopy(const Node* _curr) {
 		Node* prev = nullptr;
-				
+	
 		if (_curr->next != NULL)
 		{
 			if (this->mHead == NULL) // list is empty

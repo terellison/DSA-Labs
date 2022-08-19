@@ -34,7 +34,7 @@ NOTE: If the unit test is not on, that code will not be compiled!
 
 
 // Main toggle
-#define LAB_5	0
+#define LAB_5	1
 
 // Individual unit test toggles
 #define LAB5_PAIR_CTOR				0
@@ -43,7 +43,7 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define LAB5_CLEAR					0
 #define LAB5_INSERT_NEW				0
 #define LAB5_INSERT_EXISTING		0
-#define LAB5_FIND					0
+#define LAB5_FIND					1
 #define LAB5_FIND_NOT_FOUND			0
 #define LAB5_REMOVE					0
 #define LAB5_REMOVE_NOT_FOUND		0
@@ -70,7 +70,8 @@ class Dictionary {
 		//		_value
 		Pair(const Key& _key, const Value& _value) {
 			// TODO: Implement this method
-
+			this->key = _key;
+			this->value = _value;
 		}
 
 		// For testing
@@ -93,7 +94,10 @@ public:
 	// In:	_numBuckets			The number of elements to allocate
 	//		_hashFunc			The hashing function to be used
 	Dictionary(size_t _numBuckets, unsigned int (*_hashFunc)(const Key&)) {
-		// TODO: Implement this method
+		this->mNumBuckets = _numBuckets;
+		this->mHashFunc = _hashFunc;
+
+		this->mTable = new std::list<Pair>[this->mNumBuckets];
 
 	}
 
@@ -127,8 +131,13 @@ public:
 	//		Clears all internal data being stored
 	//  NOTE:	Does not delete table or reset hash function
 	void Clear() {
-		// TODO: Implement this method
+		for (size_t i = 0; i < this->mNumBuckets; ++i)
+		{
+			std::list<Pair>* bucket = (this->mTable + i);
 
+			bucket->clear();
+		}
+		return;
 	}
 
 	// Insert an item into the table
@@ -137,8 +146,13 @@ public:
 	//
 	// NOTE:	If there is already an item at the provided key, overwrite it.
 	void Insert(const Key& _key, const Value& _value) {
-		// TODO: Implement this method
+		unsigned int bucketNum = this->mHashFunc(_key);
+		std::list<Pair>* bucket = (this->mTable + bucketNum);
+		Pair toInsert{ _key, _value };
+		
+		bucket->remove_if([&_key](Pair v) { return v.key == _key; });
 
+		bucket->push_back(toInsert);
 	}
 
 	// Find a value at a specified key
@@ -147,8 +161,17 @@ public:
 	// Return: A const pointer to the value at the searched key
 	// NOTE:		Return a null pointer if key is not present
 	const Value* Find(const Key& _key) {
-		// TODO: Implement this method
+		unsigned int bucketNum = this->mHashFunc(_key);
+		std::list<Pair>* bucket = (this->mTable + bucketNum);
 
+		Value* result = nullptr;
+
+		for (auto it = bucket->begin(); it != bucket->end(); ++it)
+		{
+			if (it->key == _key) { result = &it->value; }
+		}
+
+		return result;
 	}
 
 	// Remove a value at a specified key
