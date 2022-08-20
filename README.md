@@ -18,8 +18,8 @@ For each lab, we are provided with pre-made header files. We then fill them in w
     
 - [DList.h](DSA%20Labs/DList.h)
 
-    * Doubly linked list, with custom iterator. Analog to ```std::list<>``` in Lab4.h
+    * Doubly linked list, with custom iterator. Analog to ```std::list<>``` in [Lab4.h](DSA%20Labs/Lab4.h)
 
 - [Dictionary.h](DSA%20Labs/Dictionary.h)
 
-    * A hash-mapped data structure using key/value pairs and separate chaining. Analog to ```std::unordered_map<>``` in Lab6.h
+    * A hash-mapped data structure using key/value pairs and separate chaining. Analog to ```std::unordered_map<>``` in [Lab6.h](DSA%20Labs/Lab6.h)
