@@ -3,7 +3,7 @@ File:			Huffman.h
 Author(s):
 	Base:		Justin Tackett
 				jtackett@fullsail.com
-	Student:
+	Student: Terry Ellison <ellisonterry4@gmail.com>
 
 Created:		03.14.2021
 Last Modified:	03.14.2021

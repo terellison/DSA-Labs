@@ -3,7 +3,7 @@ File:			DSA_Lab4.h
 Author(s):
 	Base:		Justin Tackett
 				jtackett@fullsail.com
-	Student:
+	Student: Terry Ellison <ellisonterry4@gmail.com>
 
 Created:		12.27.2020
 Last Modified:	12.30.2020

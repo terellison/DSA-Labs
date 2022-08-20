@@ -3,7 +3,7 @@ File:			Lab2.h
 Author(s):
 	Base:		Justin Tackett
 				jtackett@fullsail.com
-	Student:
+	Student: Terry Ellison <ellisonterry4@gmail.com>
 
 Created:		11.30.2020
 Last Modified:	11.30.2020

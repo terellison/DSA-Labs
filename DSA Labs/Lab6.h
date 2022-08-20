@@ -3,7 +3,7 @@ File:			DSA_Lab6.h
 Author(s):
 	Base:		Justin Tackett
 				jtackett@fullsail.com
-	Student:
+	Student: Terry Ellison <ellisonterry4@gmail.com>
 
 Created:		02.15.2021
 Last Modified:	02.16.2021

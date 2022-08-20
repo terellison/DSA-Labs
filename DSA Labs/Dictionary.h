@@ -3,7 +3,7 @@ File:			DList.h
 Author(s):
 	Base:		Justin Tackett
 				jtackett@fullsail.com
-	Student:
+	Student: Terry Ellison <ellisonterry4@gmail.com> Terry Ellison <ellisonterry4@gmail.com>
 
 Created:		1.17.2021
 Last Modified:	2.14.2021
