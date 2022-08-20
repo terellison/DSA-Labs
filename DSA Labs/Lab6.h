@@ -34,15 +34,15 @@ NOTE: If the unit test is not on, that code will not be compiled!
 
 
 // Main toggle
-#define LAB_6	0
+#define LAB_6	1
 
 // Individual unit test toggles
-#define LAB6_POPULATE_LETTER_VALUES	0
-#define LAB6_GET_LETTER_VALUE		0
-#define LAB6_GET_WORD_VALUE			0
-#define LAB6_CREATE_PAIR			0
-#define LAB6_LOAD_FILE				0
-#define LAB6_FIND_WORD_SCORE		0
+#define LAB6_POPULATE_LETTER_VALUES	1
+#define LAB6_GET_LETTER_VALUE		1
+#define LAB6_GET_WORD_VALUE			1
+#define LAB6_CREATE_PAIR			1
+#define LAB6_LOAD_FILE				1
+#define LAB6_FIND_WORD_SCORE		1
 
 /************/
 /* Includes */
@@ -66,8 +66,10 @@ public:
 	//
 	// In:	_letterValues		The array of 26 values
 	void PopulateLetterValues(const int* _letterValues) {
-		// TODO: Implement this method
-
+		for (size_t i = 0; i < 26; ++i)
+		{
+			mLetterValues[i] = _letterValues[i];
+		}
 	}
 
 	// Retrieve the value of a particular letter
@@ -77,8 +79,9 @@ public:
 	// Return:	The score value for the letter passed in
 	// NOTE:	The letter passed in will always be upper-case
 	int GetLetterValue(char _letter) const {
-		// TODO: Implement this method
-
+		int offset = (_letter - 65);
+		int val = this->mLetterValues[offset];
+		return val;
 	}
 
 	// Get the value of a word
@@ -88,8 +91,14 @@ public:
 	//
 	// Return: The total value of the word
 	int GetWordValue(const std::string& _word) const {
-		// TODO: Implement this method
-
+		int sum = 0;
+		size_t size = _word.length();
+		const char* wordArr = _word.c_str();
+		for (size_t i = 0; i < size; ++i)
+		{
+			sum += this->GetLetterValue(wordArr[i]);
+		}
+		return sum;
 	}
 
 	// Create a pair to add into the scrabbleMap
@@ -99,8 +108,7 @@ public:
 	//
 	// Return: A pair that contains the word and the total score
 	std::pair<std::string, int> CreatePair(const std::string& _word) const {
-		// TODO: Implement this method
-
+		return std::make_pair(_word, this->GetWordValue(_word));
 	}
 
 	// Load a file containing all of the possible scrabble words, along with their values
@@ -109,8 +117,18 @@ public:
 	//
 	// Note: You may want to use one or more existing methods to help.
 	void LoadWords(const char* _filename) {
-		// TODO: Implement this method
+		std::ifstream inputFile(_filename, std::ios::in);
+		if (inputFile.is_open())
+		{
+			std::string line;
 
+			while (std::getline(inputFile, line))
+			{
+				this->mScrabbleMap.insert(std::make_pair(line, this->GetWordValue(line)));
+			}
+
+			inputFile.close();
+		}
 	}
 
 	// Searches for a word in the map, and retrieves the score for that word
@@ -119,7 +137,10 @@ public:
 	//
 	// Return: The word score for _word (or -1 if not found)
 	int FindValueInMap(const std::string& _word) {
-		// TODO: Implement this method
+		auto found = this->mScrabbleMap.find(_word);
 
+		return found != this->mScrabbleMap.end() ? // if found is not .end(), then it was found so retrun the value, else -1
+			found->second
+			: -1;
 	}
 };
