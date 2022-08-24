@@ -39,16 +39,16 @@ NOTE: If the unit test is not on, that code will not be compiled!
 
 
 // Main toggle
-#define LAB_7	0
+#define LAB_7	1
 
 // Individual unit test toggles
-#define BST_CTOR								0
-#define BST_NODE_CTOR							0
-#define BST_PUSH_EMPTY							0
-#define BST_PUSH_ROOT_LEFT						0
-#define BST_PUSH_ROOT_RIGHT						0
-#define BST_PUSH_LEFT							0
-#define BST_PUSH_RIGHT							0
+#define BST_CTOR								1
+#define BST_NODE_CTOR							1
+#define BST_PUSH_EMPTY							1
+#define BST_PUSH_ROOT_LEFT						1
+#define BST_PUSH_ROOT_RIGHT						1
+#define BST_PUSH_LEFT							1
+#define BST_PUSH_RIGHT							1
 #define BST_CLEAR								0
 #define BST_DTOR								0
 #define BST_CONTAINS_FOUND						0
@@ -91,7 +91,18 @@ class BST {
 		//		_parent		The parent pointer (optional)
 		Node(const Type& _data, Node* _parent = nullptr) {
 			// TODO: Implement this method
+			left = NULL, right = NULL;
 
+			data = _data;
+
+			if (_parent != nullptr)
+			{
+				parent = _parent;
+			}
+			else
+			{
+				parent = NULL;
+			}
 		}
 	};
 
@@ -104,8 +115,7 @@ public:
 	// Default constructor
 	//			Always creates an empty tree
 	BST() {
-		// TODO: Implement this method
-
+		this->mRoot = NULL;
 	}
 
 	// Destructor
@@ -173,8 +183,14 @@ public:
 	//
 	// In:	_val			The value to add
 	void Push(const Type& _val) {
-		// TODO: Implement this method
-
+		if (this->mRoot == NULL)
+		{
+			this->mRoot = new Node(_val);
+		}
+		else
+		{
+			this->Push(_val, this->mRoot);
+		}
 	}
 
 private:
@@ -184,7 +200,20 @@ private:
 	// In:	_val		The value to add
 	//		_curr		The current Node being looked at
 	void Push(const Type& _val, Node* _curr) {
-		
+		bool lessThan = _val < _curr->data;
+		if (_curr->left != NULL && _curr->right != NULL)
+		{
+			lessThan ? this->Push(_val, _curr->left)
+				: this->Push(_val, _curr->right);
+		}
+		else if (_curr->left == NULL && lessThan)
+		{
+			_curr->left = new Node(_val, _curr);
+		}
+		else
+		{
+			_curr->right = new Node(_val, _curr);
+		}
 	}
 	
 public:
