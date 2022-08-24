@@ -49,8 +49,8 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define BST_PUSH_ROOT_RIGHT						1
 #define BST_PUSH_LEFT							1
 #define BST_PUSH_RIGHT							1
-#define BST_CLEAR								0
-#define BST_DTOR								0
+#define BST_CLEAR								1
+#define BST_DTOR								1
 #define BST_CONTAINS_FOUND						0
 #define BST_CONTAINS_NOTFOUND					0
 #define BST_REMOVE_CASE0_ROOT					0
@@ -68,7 +68,7 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define BST_REMOVE_CASE1						0
 #define BST_REMOVE_CASE2						0
 #define BST_REMOVE_NOT_FOUND					0
-#define BST_IN_ORDER_TRAVERSAL					0
+#define BST_IN_ORDER_TRAVERSAL					1
 #define BST_ASSIGNMENT_OP						0
 #define BST_COPY_CTOR							0
 
@@ -122,7 +122,10 @@ public:
 	//			Clear all dynamic memory
 	~BST() {
 		// TODO: Implement this method
-
+		if (this->mRoot != NULL)
+		{
+			this->Clear();
+		}
 	}
 
 	// Copy constructor
@@ -162,7 +165,8 @@ public:
 	// Clears out the tree and readies it for re-use
 	void Clear() {
 		// TODO: Implement this method
-
+		this->Clear(this->mRoot);
+		this->mRoot = NULL;
 	}
 
 private:
@@ -173,8 +177,18 @@ private:
 	//
 	// NOTE:	Use post-order traversal
 	void Clear(Node* _curr) {
-		// TODO: Implement this method
-
+		if (_curr->left != NULL)
+		{
+			this->Clear(_curr->left);
+			_curr->left = NULL;
+		}
+		if (_curr->right != NULL)
+		{
+			this->Clear(_curr->right);
+			_curr->right = NULL;
+		}
+		delete _curr;
+		_curr = NULL;
 	}
 
 public:
@@ -295,8 +309,9 @@ public:
 	*/
 
 	std::string InOrder() {
-		// TODO: Implement this method
-
+		std::string result = "";
+		this->InOrder(this->mRoot, result);
+		return result;
 	}
 
 private:
@@ -309,7 +324,19 @@ private:
 	// NOTE:	Use in-order traversal
 	// NOTE:	Use to_string to convert an int to its string equivelent
 	void InOrder(Node* _curr, std::string& _str) {
-		// TODO: Implement this method
+		if (_curr->left != NULL)
+		{
+			this->InOrder(_curr->left, _str);
+			_str += ' ';
+		}
+
+		_str += std::to_string(_curr->data);
+
+		if (_curr->right != NULL)
+		{
+			_str += ' ';
+			this->InOrder(_curr->right, _str);
+		}
 	}
 };
 
