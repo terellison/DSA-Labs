@@ -54,7 +54,7 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define BST_CONTAINS_FOUND						1
 #define BST_CONTAINS_NOTFOUND					1
 #define BST_REMOVE_CASE0_ROOT					0
-#define BST_REMOVE_CASE0_LEFT					0
+#define BST_REMOVE_CASE0_LEFT					1
 #define BST_REMOVE_CASE0_RIGHT					0
 #define BST_REMOVE_CASE1_ROOT_LEFT				0
 #define BST_REMOVE_CASE1_ROOT_RIGHT				0
@@ -274,7 +274,37 @@ private:
 	// In:	_node		The node to remove
 	void RemoveCase0(Node* _node) {
 		// TODO: Implement this method
+		Node* parent = _node->parent;
 
+		if (parent->left == _node)
+		{
+			/*parent->left = parent->parent;
+			Node* newParent = parent->right->parent;
+			parent->parent = newParent;
+			if (newParent->left == parent->right)
+			{
+				newParent->left = parent;
+			}
+			else
+			{
+				newParent->right = parent;
+			}*/
+		}
+		else
+		{
+			parent->right = parent->parent;
+			Node* newParent = parent->right->parent;
+			parent->parent = newParent;
+			if (newParent->left == parent->right)
+			{
+				newParent->left = parent;
+			}
+			else
+			{
+				newParent->right = parent;
+			}
+		}
+		delete _node;
 	}
 
 	// Remove a node from the tree that has only one child
@@ -308,8 +338,13 @@ public:
 	//			C) 1 child
 	bool Remove(const Type& _val) {
 		Node* temp = this->FindNode(_val);
-
-
+		if (temp != NULL)
+		{
+			if (temp->left == NULL && temp->right == NULL)
+				this->RemoveCase0(temp);
+			return true;
+		}
+		return false;
 	}
 
 	// Returns a space-delimited string of the tree in order
