@@ -62,12 +62,12 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define BST_REMOVE_CASE1_LEFT_RIGHT				1
 #define BST_REMOVE_CASE1_RIGHT_LEFT				1
 #define BST_REMOVE_CASE1_RIGHT_RIGHT			1
-#define BST_REMOVE_CASE2_CASE0					0
-#define BST_REMOVE_CASE2_CASE1					0
-#define BST_REMOVE_CASE0						0
-#define BST_REMOVE_CASE1						0
-#define BST_REMOVE_CASE2						0
-#define BST_REMOVE_NOT_FOUND					0
+#define BST_REMOVE_CASE2_CASE0					1
+#define BST_REMOVE_CASE2_CASE1					1
+#define BST_REMOVE_CASE0						1
+#define BST_REMOVE_CASE1						1
+#define BST_REMOVE_CASE2						1
+#define BST_REMOVE_NOT_FOUND					1
 #define BST_IN_ORDER_TRAVERSAL					1
 #define BST_ASSIGNMENT_OP						0
 #define BST_COPY_CTOR							0
@@ -284,54 +284,10 @@ private:
 		{
 			if (parent->left == _node)
 			{
-				/*if (parent->parent->left == parent)		rotation code ;(
-				{
-					parent->parent->left = NULL;
-				}
-				else
-				{
-					parent->parent->right = NULL;
-				}
-
-				parent->left = parent->parent;
-				Node* newParent = parent->left->parent;
-				parent->left->parent = parent;
-				parent->parent = newParent;
-
-				if (newParent->left == parent->right)
-				{
-					newParent->left = parent;
-				}
-				else
-				{
-					newParent->right = parent;
-				}*/
 				parent->left = NULL;
 			}
 			else
 			{
-				/*if (parent->parent->left == parent)
-				{
-					parent->parent->left = NULL;
-				}
-				else
-				{
-					parent->parent->right = NULL;
-				}
-
-				parent->right = parent->parent;
-				Node* newParent = parent->right->parent;
-				parent->right->parent = parent;
-				parent->parent = newParent;
-
-				if (newParent->left == parent->right)
-				{
-					newParent->left = parent;
-				}
-				else
-				{
-					newParent->right = parent;
-				}*/
 				parent->right = NULL;
 			}
 		}
@@ -400,9 +356,31 @@ private:
 	//		Case 2
 	//
 	// In:	_node		The node to remove
-	void RemoveCase2(Node* _node) {
-		// TODO: Implement this method
+	void RemoveCase2(Node* _node) 
+	{
+		Node* parent = _node->parent;
+		Node* right = _node->right;
+		if (parent != NULL)
+		{
+			Node* nextLargest = right->left == NULL ? right : right->left;
+			Node* temp = nextLargest;
+			while (temp != NULL)
+			{
+				nextLargest = temp;
+				temp = temp->left;
+			}
+			
+			_node->data = nextLargest->data;
 
+			if ((nextLargest->left == NULL) != (nextLargest->right == NULL))
+			{
+				this->RemoveCase1(nextLargest);
+			}
+			else
+			{
+				this->RemoveCase0(nextLargest);
+			}
+		}
 	}
 
 public:
@@ -422,6 +400,10 @@ public:
 		{
 			if (temp->left == NULL && temp->right == NULL)
 				this->RemoveCase0(temp);
+			else if ((temp->left == NULL) != (temp->right == NULL))
+				this->RemoveCase1(temp);
+			else
+				this->RemoveCase2(temp);
 			return true;
 		}
 		return false;
