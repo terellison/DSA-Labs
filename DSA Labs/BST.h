@@ -53,15 +53,15 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define BST_DTOR								1
 #define BST_CONTAINS_FOUND						1
 #define BST_CONTAINS_NOTFOUND					1
-#define BST_REMOVE_CASE0_ROOT					0
+#define BST_REMOVE_CASE0_ROOT					1
 #define BST_REMOVE_CASE0_LEFT					1
-#define BST_REMOVE_CASE0_RIGHT					0
-#define BST_REMOVE_CASE1_ROOT_LEFT				0
-#define BST_REMOVE_CASE1_ROOT_RIGHT				0
-#define BST_REMOVE_CASE1_LEFT_LEFT				0
-#define BST_REMOVE_CASE1_LEFT_RIGHT				0
-#define BST_REMOVE_CASE1_RIGHT_LEFT				0
-#define BST_REMOVE_CASE1_RIGHT_RIGHT			0
+#define BST_REMOVE_CASE0_RIGHT					1
+#define BST_REMOVE_CASE1_ROOT_LEFT				1
+#define BST_REMOVE_CASE1_ROOT_RIGHT				1
+#define BST_REMOVE_CASE1_LEFT_LEFT				1
+#define BST_REMOVE_CASE1_LEFT_RIGHT				1
+#define BST_REMOVE_CASE1_RIGHT_LEFT				1
+#define BST_REMOVE_CASE1_RIGHT_RIGHT			1
 #define BST_REMOVE_CASE2_CASE0					0
 #define BST_REMOVE_CASE2_CASE1					0
 #define BST_REMOVE_CASE0						0
@@ -165,8 +165,12 @@ public:
 	// Clears out the tree and readies it for re-use
 	void Clear() {
 		// TODO: Implement this method
-		this->Clear(this->mRoot);
-		this->mRoot = NULL;
+
+		if (this->mRoot != NULL)
+		{
+			this->Clear(this->mRoot);
+			this->mRoot = NULL;
+		}
 	}
 
 private:
@@ -276,33 +280,64 @@ private:
 		// TODO: Implement this method
 		Node* parent = _node->parent;
 
-		if (parent->left == _node)
+		if (parent != NULL)
 		{
-			/*parent->left = parent->parent;
-			Node* newParent = parent->right->parent;
-			parent->parent = newParent;
-			if (newParent->left == parent->right)
+			if (parent->left == _node)
 			{
-				newParent->left = parent;
+				/*if (parent->parent->left == parent)		rotation code ;(
+				{
+					parent->parent->left = NULL;
+				}
+				else
+				{
+					parent->parent->right = NULL;
+				}
+
+				parent->left = parent->parent;
+				Node* newParent = parent->left->parent;
+				parent->left->parent = parent;
+				parent->parent = newParent;
+
+				if (newParent->left == parent->right)
+				{
+					newParent->left = parent;
+				}
+				else
+				{
+					newParent->right = parent;
+				}*/
+				parent->left = NULL;
 			}
 			else
 			{
-				newParent->right = parent;
-			}*/
+				/*if (parent->parent->left == parent)
+				{
+					parent->parent->left = NULL;
+				}
+				else
+				{
+					parent->parent->right = NULL;
+				}
+
+				parent->right = parent->parent;
+				Node* newParent = parent->right->parent;
+				parent->right->parent = parent;
+				parent->parent = newParent;
+
+				if (newParent->left == parent->right)
+				{
+					newParent->left = parent;
+				}
+				else
+				{
+					newParent->right = parent;
+				}*/
+				parent->right = NULL;
+			}
 		}
 		else
 		{
-			parent->right = parent->parent;
-			Node* newParent = parent->right->parent;
-			parent->parent = newParent;
-			if (newParent->left == parent->right)
-			{
-				newParent->left = parent;
-			}
-			else
-			{
-				newParent->right = parent;
-			}
+			this->mRoot = NULL;
 		}
 		delete _node;
 	}
@@ -312,8 +347,53 @@ private:
 	//
 	// In:	_node		The node to remove
 	void RemoveCase1(Node* _node) {
-		// TODO: Implement this method
+		Node* parent = _node->parent;
+		Node* child;
+		if (parent != NULL)
+		{
+			// Figure out which side the child is on
 
+			if (_node->right != NULL)
+			{
+				child = _node->right;
+			}
+			else
+			{
+				child = _node->left;
+			}
+
+			child->parent = parent;
+
+			// Figure out which side of its parent the node to delete is on
+			// then put the child there
+
+			if (parent->right == _node)
+			{
+				parent->right = child;
+			}
+			else
+			{
+				parent->left = child;
+			}
+		}
+		else
+		{
+			// Root case
+
+			if (_node->right != NULL)
+			{
+				child = _node->right;
+			}
+			else
+			{
+				child = _node->left;
+			}
+			
+			child->parent = NULL;
+			this->mRoot = child;
+		}
+
+		delete _node;
 	}
 
 	// Remove a node from the tree that has both children
