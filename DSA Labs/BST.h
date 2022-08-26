@@ -69,8 +69,8 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define BST_REMOVE_CASE2						1
 #define BST_REMOVE_NOT_FOUND					1
 #define BST_IN_ORDER_TRAVERSAL					1
-#define BST_ASSIGNMENT_OP						0
-#define BST_COPY_CTOR							0
+#define BST_ASSIGNMENT_OP						1
+#define BST_COPY_CTOR							1
 
 
 // Templated binary search tree
@@ -133,7 +133,8 @@ public:
 		//
 		// In:	_copy		The object to copy from
 	BST(const BST& _copy) {
-		// TODO: Implement this method
+		this->mRoot = NULL;
+		*this = _copy;
 
 	}
 
@@ -146,7 +147,16 @@ public:
 	//		This allows us to daisy-chain
 	BST& operator=(const BST& _assign) {
 		// TODO: Implement this method
-		
+		if (this != &_assign)
+		{
+			if (this->mRoot != NULL)
+			{
+				this->Clear();
+			}
+
+			this->Copy(_assign.mRoot);
+		}
+		return *this;
 	}
 
 private:
@@ -156,8 +166,31 @@ private:
 	//
 	// NOTE:	Use pre-order traversal
 	void Copy(const Node* _curr) {
-		// TODO: Implement this method
-
+		if (_curr != NULL)
+		{
+			if (this->mRoot == NULL)
+			{
+				this->mRoot = new Node(_curr->data);
+				this->Copy(_curr->left);
+				this->Copy(_curr->right);
+			}
+			else
+			{
+				Node* temp = new Node(_curr->data, this->mRoot);
+				if (temp->data < this->mRoot->data)
+				{
+					this->mRoot->left = temp;
+				}
+				else
+				{
+					this->mRoot->right = temp;
+				}
+				this->mRoot = temp;
+				this->Copy(_curr->left);
+				this->Copy(_curr->right);
+				this->mRoot = temp->parent;
+			}
+		}
 	}
 
 public:
