@@ -150,7 +150,7 @@ public:
 
 		*/
 		Iterator operator++(int) {
-			// TODO: Implement this method
+			
 			Iterator val{};
 			val.mCurr = this->mCurr;
 			this->mCurr = this->mCurr->next;
@@ -177,7 +177,7 @@ public:
 				R
 		*/
 		Iterator& operator--() {
-			// TODO: Implement this method
+			
 			this->mCurr = this->mCurr->prev;
 			return *this;
 		}

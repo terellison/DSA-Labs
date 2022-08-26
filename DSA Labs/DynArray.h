@@ -130,7 +130,7 @@ public:
 	//		Cleans up all dynamically allocated memory
 	//		Sets all data members back to default values
 	void Clear() {
-		// TODO: Implement this method
+		
 		this->~DynArray();
 		mCapacity = 0;
 		mSize = 0;
@@ -149,7 +149,7 @@ public:
 	//
 	// Return: The current number of elements used
 	size_t Size() const {
-		// TODO: Implement this method
+		
 		return mSize;
 	}
 
@@ -165,7 +165,7 @@ public:
 	//
 	// In:	_data			The item to be added
 	void Append(const Type& _data) {
-		// TODO: Implement this method
+		
 		if (mSize + 1 > mCapacity)
 		{
 			Reserve();

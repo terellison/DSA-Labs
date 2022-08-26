@@ -90,7 +90,7 @@ class BST {
 		// In:	_data		The value to store in this node
 		//		_parent		The parent pointer (optional)
 		Node(const Type& _data, Node* _parent = nullptr) {
-			// TODO: Implement this method
+			
 			left = NULL, right = NULL;
 
 			data = _data;
@@ -121,7 +121,7 @@ public:
 	// Destructor
 	//			Clear all dynamic memory
 	~BST() {
-		// TODO: Implement this method
+		
 		if (this->mRoot != NULL)
 		{
 			this->Clear();
@@ -146,7 +146,7 @@ public:
 	// Return:	The invoking object (by reference)
 	//		This allows us to daisy-chain
 	BST& operator=(const BST& _assign) {
-		// TODO: Implement this method
+		
 		if (this != &_assign)
 		{
 			if (this->mRoot != NULL)
@@ -197,7 +197,7 @@ public:
 
 	// Clears out the tree and readies it for re-use
 	void Clear() {
-		// TODO: Implement this method
+		
 
 		if (this->mRoot != NULL)
 		{
@@ -310,7 +310,7 @@ private:
 	// 	   
 	// In:	_node		The node to remove
 	void RemoveCase0(Node* _node) {
-		// TODO: Implement this method
+		
 		Node* parent = _node->parent;
 
 		if (parent != NULL)

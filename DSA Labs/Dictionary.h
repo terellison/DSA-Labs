@@ -69,7 +69,7 @@ class Dictionary {
 		// In:	_key
 		//		_value
 		Pair(const Key& _key, const Value& _value) {
-			// TODO: Implement this method
+			
 			this->key = _key;
 			this->value = _value;
 		}
