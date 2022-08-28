@@ -289,7 +289,7 @@ class Huffman {
 		this->GenerateEncodingTable();
 
 		// 2. Create a BitOStream and supply it the huffman header
-		BitOfstream outputStream(_outputFile, (const char*)mFrequencyTable, mFrequencyTable[256]);
+		BitOfstream outputStream(_outputFile, (const char*)mFrequencyTable, this->mRoot->freq);
 		
 		// 3. Open the input file in binary mode with a standard ifstream
 
