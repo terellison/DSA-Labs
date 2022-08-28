@@ -47,10 +47,10 @@ NOTE: If the unit test is not on, that code will not be compiled!
 #define HUFFMAN_GENERATE_LEAFLIST		1
 #define HUFFMAN_GENERATE_TREE			1
 #define HUFFMAN_CLEAR_TREE				1
-#define HUFFMAN_DTOR					0
+#define HUFFMAN_DTOR					1
 #define HUFFMAN_GENERATE_ENCODING		1
 #define HUFFMAN_COMPRESS				1
-#define HUFFMAN_DECOMPRESS				0
+#define HUFFMAN_DECOMPRESS				1
 
 // Wraps up Huffman compression algorithm
 class Huffman {
@@ -125,7 +125,8 @@ class Huffman {
 	//		Needs to clean up any left-over dynamic memory in tree
 	~Huffman() {
 		// 1. Clear out the tree
-		this->ClearTree();
+		if(mRoot != NULL)
+			this->ClearTree();
 
 	}
 
@@ -289,7 +290,7 @@ class Huffman {
 		this->GenerateEncodingTable();
 
 		// 2. Create a BitOStream and supply it the huffman header
-		BitOfstream outputStream(_outputFile, (const char*)mFrequencyTable, this->mRoot->freq);
+		BitOfstream outputStream(_outputFile, (const char*)mFrequencyTable, sizeof(unsigned int) * 256);
 		
 		// 3. Open the input file in binary mode with a standard ifstream
 
@@ -318,22 +319,57 @@ class Huffman {
 	void Decompress(const char* _outputFile) {
 		// 1. Create a BitIStream and read the frequency table
 
+		BitIfstream inputFile(this->mFileName.c_str(), (char*)mFrequencyTable, sizeof(unsigned int) * 256);
+		
 		// 2. Create the leaf list and tree (in this order)
-
+		this->GenerateLeafList();
+		this->GenerateTree();
 		// 3. Create a standard ofstream for output (binary mode)
+		std::ofstream output(_outputFile, std::ios_base::binary);
 
 		// 4. Create a bool to use for traversing down the list, and a char to store the character for writing
+		bool direction = 0;
+		unsigned char toWrite = 0;
 
 		// 5. Create a node pointer for use in traversing the list (start it at the top)
-
+		HuffNode* temp = this->mRoot;
 		// 6. Go through the compressed file one bit at a time, traversing through the tree
 		//		When you get to a leaf node, write out the value, and go back to the root
 		//	Note: Remember, there may be trailing 0's at the end of the file, so only loop the appropriate number of times
+		if (output.is_open())
+		{
+			size_t i = 0;
+			while(i < mRoot->freq) // Loop for every character
+			{
+				while (temp->left != NULL && temp->right != NULL) // ensures that we get to a leaf node, 
+				{												  // because we can overflow into another character's directions if not careful
+					inputFile >> direction;
+					HuffNode* prev = temp;
+					if (direction == true)
+					{
+						temp = temp->right;
+					}
+					else
+					{
+						temp = temp->left;
+					}
+				}
+
+				toWrite = (unsigned char)temp->value;
+				output.write((char*)&toWrite, sizeof(unsigned char));
+				toWrite = 0;
+				temp = this->mRoot;
+				++i;
+			}
+		}
 
 		// 7. Close the streams
+		
+		inputFile.Close();
 
 		// 8. Clean up the dynamic memory by clearing the tree
-
+		this->ClearTree(this->mRoot);
+		this->mRoot = NULL;
 	}
 
 
