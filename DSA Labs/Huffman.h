@@ -102,7 +102,7 @@ class Huffman {
 	// Data members
 	// NOTE: Values set to 1/-1 for unit test purposes
 	std::string mFileName = "-1";						// The name of the file to open for read/write
-	unsigned int mFrequencyTable[257] = { 1 };			// The frequency of each character in the file (the index in the array is the char's ASCII value)
+	unsigned int mFrequencyTable[256] = { 1 };			// The frequency of each character in the file (the index in the array is the char's ASCII value)
 	std::vector<HuffNode*> mLeafList;						// Contains all of the dynamically allocated leaf nodes
 	HuffNode* mRoot = reinterpret_cast<HuffNode*>(-1);	// The root of the huffman tree (set in GenerateTree)
 	std::vector<bool> mEncodingTable[256];					// Contains all of the bit-codes used to compress/decompress a file
@@ -149,7 +149,6 @@ class Huffman {
 			{
 				unsigned int num = buffer;
 				++this->mFrequencyTable[num];
-				++this->mFrequencyTable[256];
 			}
 			inputFile.close();
 		}
