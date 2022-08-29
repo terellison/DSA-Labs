@@ -4,7 +4,7 @@
 
 These are my lab submissions for Data Structures and Algorithms at Full Sail University, while taking the course in August 2022.
 
-There are several custom implementations of common data structures, each accompanied by a seperate lab using its STL counterpart.
+There are several custom implementations of common data structures, each accompanied by a seperate lab using its STL counterpart (if available).
 
 For each lab, we are provided with pre-made header files. We then fill them in with our own implementation. There is also a test harness provided, which can be toggled on / off in each corresponding header file.
 
